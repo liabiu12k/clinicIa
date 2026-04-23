@@ -1,0 +1,21 @@
+<div class="module-card">
+    <h2 style="margin-bottom: 8px;">Verificar Identidad</h2>
+    <p style="margin-bottom: 20px;">Por favor confirma que la imagen es correcta</p>
+
+    <div class="video-preview">
+        <!-- Canvas/Image for snapshot -->
+        <div id="snapshot-container" style="width: 100%; aspect-ratio: 16/9; background: #cbd5e1; display: flex; justify-content: center; align-items: center;">
+            <i class="fas fa-user" style="font-size: 5rem; color: white;"></i>
+        </div>
+    </div>
+
+    <div style="background: #eff6ff; padding: 12px; border-radius: 10px; border: 1px solid #dbeafe; color: #1d4ed8; font-size: 0.875rem; display: flex; align-items: center; gap: 10px; margin-bottom: 25px; text-align: left;">
+        <i class="fas fa-check-circle"></i>
+        <span><strong>Identificación detectada:</strong> La imagen cumple con los requisitos de calidad</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%;">
+        <button id="btn-retry" class="btn-secondary">Reintentar</button>
+        <button id="btn-confirm" class="btn-primary">Confirmar</button>
+    </div>
+</div>
