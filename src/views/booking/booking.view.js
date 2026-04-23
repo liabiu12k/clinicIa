@@ -178,16 +178,23 @@ export class BookingView {
     _showAnalysis(spec) {
         const content = document.getElementById('bk-content');
         content.innerHTML = `
-        <div class="bk-container fade-in" style="text-align:center; padding-top:60px;">
-            <div class="analysis-badge" style="background:${spec.bg};">
-                <i class="fas ${spec.icon}" style="color:${spec.color}; font-size:2.5rem;"></i>
-            </div>
-            <h2 style="margin:20px 0 8px;">${spec.name}</h2>
-            <p style="color:var(--text-muted); margin-bottom:40px;">Analizando disponibilidad y coincidencias...</p>
-            <div class="analysis-steps">
-                <div class="step-item" id="step-1"><i class="fas fa-history"></i> Revisando historial médico</div>
-                <div class="step-item" id="step-2"><i class="fas fa-brain"></i> Analizando preferencias</div>
-                <div class="step-item" id="step-3"><i class="fas fa-star"></i> Calculando mejor match</div>
+        <div class="bk-container fade-in">
+            <div class="split-layout">
+                <!-- Left: specialty info -->
+                <div class="split-left" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
+                    <div class="analysis-badge" style="background:${spec.bg};">
+                        <i class="fas ${spec.icon}" style="color:${spec.color}; font-size:3rem;"></i>
+                    </div>
+                    <h2 style="margin:24px 0 10px;font-size:clamp(1.4rem,2.5vw,2rem);">${spec.name}</h2>
+                    <p style="color:var(--text-muted);font-size:1rem;">Sistema analizando las mejores opciones para ti</p>
+                </div>
+                <!-- Right: steps -->
+                <div class="split-right" style="display:flex;flex-direction:column;justify-content:center;gap:16px;">
+                    <p style="font-weight:700;font-size:.85rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">PROCESO DE ANÁLISIS</p>
+                    <div class="step-item" id="step-1"><i class="fas fa-history"></i> Revisando historial médico</div>
+                    <div class="step-item" id="step-2"><i class="fas fa-brain"></i> Analizando preferencias</div>
+                    <div class="step-item" id="step-3"><i class="fas fa-star"></i> Calculando mejor match</div>
+                </div>
             </div>
         </div>`;
 
@@ -273,23 +280,40 @@ export class BookingView {
         const content = document.getElementById('bk-content');
         const now = new Date().toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', month: 'long' });
         content.innerHTML = `
-        <div class="bk-container fade-in" style="max-width:600px;">
-            <div style="text-align:center; margin-bottom:40px;">
-                <div style="width:90px;height:90px;background:#dcfce7;border-radius:50%;display:flex;justify-content:center;align-items:center;margin:0 auto 20px;">
-                    <i class="fas fa-check-circle" style="font-size:3rem;color:#16a34a;"></i>
+        <div class="bk-container fade-in">
+            <div class="split-layout">
+                <!-- Left: success message -->
+                <div class="split-left" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
+                    <div style="width:110px;height:110px;background:#dcfce7;border-radius:50%;display:flex;justify-content:center;align-items:center;margin-bottom:24px;">
+                        <i class="fas fa-check-circle" style="font-size:3.5rem;color:#16a34a;"></i>
+                    </div>
+                    <h1 style="font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:12px;">¡Cita Reservada!</h1>
+                    <p style="color:var(--text-muted);margin-bottom:24px;">Tu turno ha sido procesado por ClinicIA</p>
+                    <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:280px;">
+                        <div style="background:#eff6ff;padding:14px 18px;border-radius:10px;display:flex;align-items:center;gap:12px;text-align:left;">
+                            <i class="fas fa-bell" style="color:#3b82f6;"></i>
+                            <span style="font-size:.875rem;color:#1d4ed8;">Recordatorio enviado a tu móvil</span>
+                        </div>
+                        <div style="background:#f0fdf4;padding:14px 18px;border-radius:10px;display:flex;align-items:center;gap:12px;text-align:left;">
+                            <i class="fas fa-map-marker-alt" style="color:#16a34a;"></i>
+                            <span style="font-size:.875rem;color:#15803d;">Consultorio 302 — Piso 3</span>
+                        </div>
+                    </div>
                 </div>
-                <h1 style="font-size:1.8rem; margin-bottom:8px;">¡Cita Reservada!</h1>
-                <p style="color:var(--text-muted);">Tu turno ha sido procesado por ClinicIA</p>
+                <!-- Right: appointment details -->
+                <div class="split-right" style="display:flex;flex-direction:column;justify-content:center;">
+                    <p style="font-weight:700;font-size:.85rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;">DETALLES DE LA CITA</p>
+                    <div class="confirm-table" style="margin-bottom:24px;">
+                        <div class="confirm-row"><span>Paciente</span><strong>${this.userName}</strong></div>
+                        <div class="confirm-row"><span>Médico</span><strong>${doctor.name}</strong></div>
+                        <div class="confirm-row"><span>Especialidad</span><strong>${spec.name}</strong></div>
+                        <div class="confirm-row"><span>Fecha</span><strong>${now}</strong></div>
+                        <div class="confirm-row"><span>Hora</span><strong>${time}</strong></div>
+                        <div class="confirm-row"><span>Consultorio</span><strong>302</strong></div>
+                    </div>
+                    <button class="bk-btn-primary" id="btn-new">Nueva Verificación</button>
+                </div>
             </div>
-            <div class="confirm-table">
-                <div class="confirm-row"><span>Paciente</span><strong>${this.userName}</strong></div>
-                <div class="confirm-row"><span>Médico</span><strong>${doctor.name}</strong></div>
-                <div class="confirm-row"><span>Especialidad</span><strong>${spec.name}</strong></div>
-                <div class="confirm-row"><span>Fecha</span><strong>${now}</strong></div>
-                <div class="confirm-row"><span>Hora</span><strong>${time}</strong></div>
-                <div class="confirm-row"><span>Consultorio</span><strong>302</strong></div>
-            </div>
-            <button class="bk-btn-primary" id="btn-new" style="margin-top:30px;">Nueva Verificación</button>
         </div>`;
 
         this.ai.announceDoctor(doctor.name, time, 'consultorio 302');
@@ -332,12 +356,17 @@ export class BookingView {
         .spec-footer { display:flex; justify-content:space-between; align-items:center; color:var(--text-muted); font-size:.78rem; padding-top:10px; border-top:1px solid #f1f5f9; margin-top:auto; }
 
         /* ── Analysis ── */
-        .analysis-badge { width:90px; height:90px; border-radius:50%; display:flex; justify-content:center; align-items:center; margin:0 auto 10px; }
-        .analysis-steps { display:flex; flex-direction:column; gap:12px; max-width:380px; margin:0 auto; width:100%; }
+        .analysis-badge { width:100px; height:100px; border-radius:50%; display:flex; justify-content:center; align-items:center; margin:0 auto 10px; }
+        .analysis-steps { display:flex; flex-direction:column; gap:12px; width:100%; }
         .step-item      { background:#fff; padding:14px 20px; border-radius:12px; display:flex; align-items:center; gap:12px; font-size:.95rem; color:var(--text-muted); border:2px solid transparent; transition:all .4s; }
         .step-item i    { color:#cbd5e1; transition:color .4s; }
         .step-item.done { border-color:#22c55e; color:var(--text-main); }
         .step-item.done i { color:#22c55e; }
+
+        /* ── Split layout (2-col on desktop) ── */
+        .split-layout { display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,60px); min-height:calc(100vh - 140px); align-items:center; }
+        .split-left   { padding:clamp(20px,4vw,48px); }
+        .split-right  { padding:clamp(20px,4vw,48px); }
 
         /* ── Doctor list ── */
         .doctor-list   { display:flex; flex-direction:column; gap:20px; }
@@ -416,6 +445,13 @@ export class BookingView {
             .ai-speech-bubble{ display:none !important; }
             .confirm-row     { padding:11px 14px; flex-direction:column; align-items:flex-start; gap:2px; }
             .confirm-row strong { text-align:left; }
+        }
+
+        /* Split layout — tablet stacks to 1 column */
+        @media (max-width:768px) {
+            .split-layout { grid-template-columns:1fr; min-height:auto; gap:16px; }
+            .split-left   { padding:24px 0 8px; }
+            .split-right  { padding:8px 0 24px; }
         }
         `;
     }
