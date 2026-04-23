@@ -7,7 +7,7 @@ export class SuccessView {
 
     render(userName) {
         this.container.innerHTML = template;
-        this.container.querySelector('#res-name').textContent = userName;
-        this.container.querySelector('#btn-restart').addEventListener('click', () => location.reload());
+        const nameEl = this.container.querySelector('#res-name');
+        if (nameEl) nameEl.textContent = userName;
     }
 }
