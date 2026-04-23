@@ -1,6 +1,3 @@
-import scanTemplate from './faceid.html?raw';
-import confirmTemplate from './confirm.html?raw';
-
 export class FaceIDView {
     constructor(container, cameraService, onComplete) {
         this.container = container;
@@ -10,16 +7,27 @@ export class FaceIDView {
     }
 
     async render(userName) {
-        // Step 1: Scanning state (Image 1 prototype)
-        this.container.innerHTML = scanTemplate;
+        // Step 1: Scanning state
+        this.container.innerHTML = `
+        <div class="module-card">
+            <div class="scan-circle" id="scan-circle">
+                <video id="video" autoplay playsinline style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; transform: scaleX(-1);"></video>
+            </div>
+            <h2 id="scan-status-title" style="margin-bottom: 8px;">Capturando imagen...</h2>
+            <p style="color: var(--text-muted);">Mantén tu rostro centrado en el círculo</p>
+            <div class="dots-loader" style="margin-top: 16px;">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>`;
+
         const video = this.container.querySelector('#video');
         this.cameraService.videoElement = video;
-
         const success = await this.cameraService.start();
 
-        // If camera fails, simulate a captured image after delay
         setTimeout(() => {
-            if (success && video) {
+            if (success && video.readyState >= 2) {
                 this._capturedDataUrl = this._captureFrame(video);
             }
             this.cameraService.stop();
@@ -27,63 +35,54 @@ export class FaceIDView {
         }, 4000);
     }
 
-    /**
-     * Capture a single frame from the video element using canvas
-     */
     _captureFrame(video) {
         try {
             const canvas = document.createElement('canvas');
             canvas.width = video.videoWidth || 640;
             canvas.height = video.videoHeight || 480;
             const ctx = canvas.getContext('2d');
-            // Mirror the capture to match mirrored video display
             ctx.translate(canvas.width, 0);
             ctx.scale(-1, 1);
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             return canvas.toDataURL('image/jpeg', 0.85);
         } catch (e) {
-            console.warn('Could not capture frame:', e);
+            console.warn('Frame capture failed:', e);
             return null;
         }
     }
 
     _showConfirmation(userName) {
-        // Step 2: Confirmation state (Image 2 prototype)
-        this.container.innerHTML = confirmTemplate;
+        // Step 2: Confirmation state
+        const imgHtml = this._capturedDataUrl
+            ? `<img src="${this._capturedDataUrl}" style="width:100%; display:block;">`
+            : `<div style="width:100%; aspect-ratio:4/3; background:#e2e8f0; display:flex; justify-content:center; align-items:center;">
+                   <i class="fas fa-user" style="font-size:5rem; color:#94a3b8;"></i>
+               </div>`;
 
-        // Draw captured frame into canvas
-        const canvas = this.container.querySelector('#snapshot-canvas');
-        if (canvas && this._capturedDataUrl) {
-            const img = new Image();
-            img.onload = () => {
-                canvas.width = img.width;
-                canvas.height = img.height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0);
-            };
-            img.src = this._capturedDataUrl;
-        } else if (canvas) {
-            // Fallback placeholder if camera was unavailable
-            canvas.width = 640;
-            canvas.height = 360;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#e2e8f0';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#94a3b8';
-            ctx.font = 'bold 24px Outfit, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('Vista previa no disponible', canvas.width / 2, canvas.height / 2);
-        }
+        this.container.innerHTML = `
+        <div class="module-card">
+            <h2 style="font-size: 1.4rem; margin-bottom: 6px;">Verificar Identidad</h2>
+            <p style="color: var(--text-muted); margin-bottom: 16px;">Por favor confirma que la imagen es correcta</p>
 
-        // Retry → restart the entire scan flow
+            <div style="width:100%; border-radius:12px; overflow:hidden; border:2px solid var(--primary-blue); margin-bottom:16px;">
+                ${imgHtml}
+            </div>
+
+            <div style="background:#eff6ff; padding:12px 16px; border-radius:10px; border:1px solid #bfdbfe; color:#1d4ed8; font-size:0.875rem; display:flex; align-items:center; gap:10px; margin-bottom:24px; text-align:left; width:100%;">
+                <i class="fas fa-check-circle" style="font-size:1.1rem; flex-shrink:0;"></i>
+                <span><strong>Identificación detectada:</strong> La imagen cumple con los requisitos de calidad</span>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%;">
+                <button id="btn-retry" class="btn-secondary">Reintentar</button>
+                <button id="btn-confirm" class="btn-primary">Confirmar</button>
+            </div>
+        </div>`;
+
         this.container.querySelector('#btn-retry')?.addEventListener('click', () => {
             this._capturedDataUrl = null;
             this.render(userName);
         });
-
-        // Confirm → navigate forward
-        this.container.querySelector('#btn-confirm')?.addEventListener('click', () => {
-            this.onComplete();
-        });
+        this.container.querySelector('#btn-confirm')?.addEventListener('click', () => this.onComplete());
     }
 }
