@@ -315,14 +315,14 @@ export class BookingView {
         .header-meta { display:flex; align-items:center; gap:8px; color:var(--text-muted); font-size:.85rem; }
 
         /* ── Layout ── */
-        .bk-main { flex:1; padding:12px 0 100px; }
-        .bk-container { max-width:1100px; margin:0 auto; padding:40px 40px 0; }
+        .bk-main { flex:1; display:flex; flex-direction:column; padding:0 0 80px; }
+        .bk-container { width:100%; padding:40px clamp(20px,4vw,60px) 0; }
         .bk-title-area { text-align:center; margin-bottom:40px; }
-        .bk-title-area h1 { font-size:clamp(1.4rem,4vw,2rem); font-weight:800; margin-bottom:10px; }
-        .bk-title-area p  { color:var(--text-muted); font-size:clamp(.875rem,2vw,1rem); }
+        .bk-title-area h1 { font-size:clamp(1.4rem,3vw,2.2rem); font-weight:800; margin-bottom:10px; }
+        .bk-title-area p  { color:var(--text-muted); font-size:clamp(.875rem,1.5vw,1.05rem); }
 
-        /* ── Specialty grid ── */
-        .specialty-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+        /* ── Specialty grid — fills available width ── */
+        .specialty-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(14px,2vw,24px); }
         .specialty-card { background:#fff; padding:24px; border-radius:16px; cursor:pointer; transition:transform .25s,box-shadow .25s,border-color .25s; box-shadow:0 2px 8px rgba(0,0,0,.07); display:flex; flex-direction:column; gap:14px; border:2px solid transparent; -webkit-tap-highlight-color:transparent; user-select:none; }
         .specialty-card:hover  { box-shadow:0 8px 24px rgba(59,130,246,.15); border-color:var(--primary-blue); transform:translateY(-4px); }
         .specialty-card:active { transform:scale(.97); }
