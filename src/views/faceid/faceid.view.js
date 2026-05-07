@@ -83,6 +83,36 @@ export class FaceIDView {
             this._capturedDataUrl = null;
             this.render(userName);
         });
-        this.container.querySelector('#btn-confirm')?.addEventListener('click', () => this.onComplete());
+        this.container.querySelector('#btn-confirm')?.addEventListener('click', async () => {
+            const confirmBtn = this.container.querySelector('#btn-confirm');
+            const originalText = confirmBtn.innerText;
+            confirmBtn.innerText = 'Verificando...';
+            confirmBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/verify-biometric', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fullName: userName,
+                        biometricData: this._capturedDataUrl
+                    })
+                });
+
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    this.onComplete();
+                } else {
+                    alert('Error en la verificación biométrica: ' + (result.error || 'Desconocido'));
+                    confirmBtn.innerText = originalText;
+                    confirmBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Verificación biométrica fallida:', error);
+                alert('Error al conectar con el servidor para la verificación.');
+                confirmBtn.innerText = originalText;
+                confirmBtn.disabled = false;
+            }
+        });
     }
 }
